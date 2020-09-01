@@ -6,6 +6,7 @@
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 #include "EEPROM_DATA.h"
+#include "TEMP_SENSOR.h"
 
 
 
@@ -27,13 +28,13 @@
 void init_module(unsigned timer_on, unsigned timer_off);
 void my_delay_ms(int ms);
 
-struct 
+typedef struct 
 {
   int timer_on = 3;
   int timer_off = 2;
-}timers_temp_t;
+}timers_temp;
 
-
+timers_temp timers_temp_t; 
 
 
 int main()
@@ -60,7 +61,7 @@ int main()
 
   while (1)
   {
-    /* code */
+    TEMP_read();
   }
 }
 
