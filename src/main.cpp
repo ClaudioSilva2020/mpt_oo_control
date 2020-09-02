@@ -9,14 +9,6 @@
 #include "TEMP_SENSOR.h"
 
 
-
-
-//-------------------------Configurações Macros ------------------------------//
-#define set_Bit(Reg, bit_x) (Reg|=(1<<bit_x)) //seta bit x do registrador Reg
-#define clr_Bit(Reg, bit_x) (Reg&=~(1<<bit_x)) //reseta o bit
-#define test_Bit(Reg, bit_x) (Reg&(1<<bit_x))  //testa o estado e retorna 1ou0
-#define clp_Bit(Reg, bit_x) (Reg^=(1<<bit_x))  //troca o estado logico do bit
-
 #define COMAND_CH PB0
 #define STATE_RELAY PB2
 #define ADDRESS_TON 0x00
@@ -26,14 +18,17 @@
 
 // Protótipo de finção
 void init_module(unsigned timer_on, unsigned timer_off);
-void my_delay_ms(int ms);
+void my_delay_ms(unsigned ms);
 
+// timer_on tempo em nível lógico alto
+// timer_off tempo em nível lógico baixo
 typedef struct 
 {
   int timer_on = 3;
   int timer_off = 2;
 }timers_temp;
 
+// instância do timer_temp
 timers_temp timers_temp_t; 
 
 
@@ -47,12 +42,17 @@ int main()
   value_on = EEPROM_read(ADDRESS_TON);
   value_off = EEPROM_read(ADDRESS_TOFF);
 
+  Serial.begin(9600);
 
-  if ((value_on && value_off) == 0xFF)
+  if ((value_on) == 0xFF)
   {
     EEPROM_write(ADDRESS_TON, timers_temp_t.timer_on);
+  }
+  if ((value_off) == 0xFF)
+  {
     EEPROM_write(ADDRESS_TOFF, timers_temp_t.timer_off);
   }
+  
   
   init_module(EEPROM_read(ADDRESS_TON), EEPROM_read(ADDRESS_TOFF));
   
@@ -62,6 +62,7 @@ int main()
   while (1)
   {
     TEMP_read();
+    Serial.println(TEMP_read());
   }
 }
 
@@ -83,7 +84,7 @@ void init_module(unsigned timer_on, unsigned timer_off)
   }
 }
 // -------------------------------------Delay com Parâmetros----------------------------------//
-void my_delay_ms(int ms)
+void my_delay_ms(unsigned ms)
 {
   while (0 < ms)
   {
