@@ -1,3 +1,11 @@
+/********************************************************************************
+@file TEMP_SENSOR.h
+@brief arq de cabeçalho e lib firmware parte do sensor de temperatura
+@author Cláudio Silva 
+@date 31/08/2020
+@version 1.0
+*********************************************************************************/
+
 #ifndef __TEMP_SENSOR
 #define __TEMP_SENSOR
 

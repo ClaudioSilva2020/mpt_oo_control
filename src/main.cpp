@@ -1,3 +1,11 @@
+/****************************************************************************
+@file main.cpp
+@brief Programa main do firmware da placa de controle de acionamento do MPT
+@author Cláudio Silva 
+@date 31/08/2020
+@version 1.0
+****************************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <Arduino.h>
@@ -9,7 +17,7 @@
 #include "TEMP_SENSOR.h"
 
 
-#define COMAND_CH PB0
+#define COMAND_CH PB1
 #define STATE_RELAY PB2
 #define ADDRESS_TON 0x00
 #define ADDRESS_TOFF 0x01

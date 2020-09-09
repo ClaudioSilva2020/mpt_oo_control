@@ -1,3 +1,11 @@
+/********************************************************************************
+@file EEPROM_DATA.h
+@brief arq de cabeçalho e lib firmware de leitura  e escrita na EEPROM
+@author Cláudio Silva 
+@date 31/08/2020
+@version 1.0
+*********************************************************************************/
+
 #ifndef __EEPROM_DATA
 #define __EEPROM_DATA
 
