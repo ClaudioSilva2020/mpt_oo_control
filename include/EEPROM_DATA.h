@@ -11,8 +11,8 @@
 
 #include <Arduino.h>
 
-void EEPROM_write(unsigned char ucAddress, unsigned char ucData);
-unsigned char EEPROM_read(unsigned char ucAddress);
+void EEPROM_write(uint8_t ucAddress, uint8_t ucData);
+unsigned char EEPROM_read(uint8_t ucAddress);
 
 
 
@@ -20,7 +20,7 @@ unsigned char EEPROM_read(unsigned char ucAddress);
 /************************************************************
 *                 Função de Escrita na EEPROM               *
 *************************************************************/                                                                      
-void EEPROM_write(unsigned char ucAddress, unsigned char ucData)
+void EEPROM_write(uint8_t ucAddress, uint8_t ucData)
 {
     // Aguarada a ultima escrita ser completa
     while (EECR & (1<<EEPE));
@@ -37,7 +37,7 @@ void EEPROM_write(unsigned char ucAddress, unsigned char ucData)
 /**************************************************************
 *                Função de Leitura da EEPROM                  *
 ***************************************************************/
-unsigned char EEPROM_read(unsigned char ucAddress)
+unsigned char EEPROM_read(uint8_t ucAddress)
 {
     // Aguarada a ultima escrita ser completa
     while (EECR & (1<<EEPE));

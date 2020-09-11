@@ -16,7 +16,7 @@
 
 //---------------Protótipos----------------------//
 void PWM_conf();
-void PWM_alter_rate(unsigned int rate);
+void PWM_alter_rate(uint8_t rate);
 
 
 /************************************************************
@@ -35,8 +35,9 @@ void PWM_conf()
     TCCR0B |= (1<<CS00);
 }
 
-void PWM_alter_rate(unsigned int rate)
+void PWM_alter_rate(uint8_t rate)
 {
+    PWM_conf();
     OCR0A = rate;
 }
 #endif

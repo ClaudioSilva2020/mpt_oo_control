@@ -15,6 +15,7 @@
 #include <avr/pgmspace.h>
 #include "EEPROM_DATA.h"
 #include "TEMP_SENSOR.h"
+#include "PWM.h"
 
 
 #define COMAND_CH PB1
@@ -25,15 +26,15 @@
 
 
 // Protótipo de finção
-void init_module(unsigned timer_on, unsigned timer_off);
+void init_module(uint8_t timer_on, uint8_t timer_off);
 void my_delay_ms(unsigned ms);
 
 // timer_on tempo em nível lógico alto
 // timer_off tempo em nível lógico baixo
 typedef struct 
 {
-  int timer_on = 3;
-  int timer_off = 2;
+  uint8_t timer_on = 3;
+  uint8_t timer_off = 2;
 }timers_temp;
 
 // instância do timer_temp
@@ -43,6 +44,7 @@ timers_temp timers_temp_t;
 int main()
 {
   int value_on, value_off;
+  float TEMPERATURE_read;
   // Bit 0 e 1 como saída e bit 2 e 3 como entrada
   // Pull-Up habilitado e as saída em nível lógico baixo
   DDRB |= 0x03; 
@@ -63,19 +65,29 @@ int main()
   
   
   init_module(EEPROM_read(ADDRESS_TON), EEPROM_read(ADDRESS_TOFF));
+  PWM_alter_rate(128);
   
 
 
 
   while (1)
   {
-    TEMP_read();
-    Serial.println(TEMP_read());
+    TEMPERATURE_read = TEMP_read();
+    Serial.println(TEMPERATURE_read);
+
+    if (TEMPERATURE_read >= 70)
+    {
+      PWM_alter_rate(255);
+      EEPROM_write(0x02, TEMPERATURE_read);
+    }else
+    {
+      PWM_alter_rate(128);
+    }
   }
 }
 
 // ----------------------------------Função de inicialização----------------------------------//
-void init_module(unsigned timer_on, unsigned timer_off)
+void init_module(uint8_t timer_on, uint8_t timer_off)
 {
   // Se o relé de saída estiver desacionado: manda sinal pra o comando da chave 
   // por tempo em alto (3seg) aguarda alguns segindos off e envia novamente e 
