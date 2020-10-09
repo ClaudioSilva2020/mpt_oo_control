@@ -79,16 +79,39 @@ void setup()
   void loop()
   {
     // _init_monitor();
-    /*TEMPERATURE_read = (TEMP_read() - 235)/1.22;
+    TEMPERATURE_read = (TEMP_read() - 235)/1.22;
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("  Temp do MPT  ");
+    lcd.setCursor(0, 1);
+    lcd.print("Temp: ");
+    lcd.setCursor(11, 1);
+    lcd.print((TEMP_read()-235)/1.22);
+    lcd.setCursor(15, 1);
+    lcd.print("C");
+    my_delay_ms(500);
     if (TEMPERATURE_read >= 33)
     {
-      PWM_alter_rate(230);
+      // PWM_alter_rate(230);
       EEPROM_write(0x02, TEMPERATURE_read);
-      set_Bit(PORTB, PB1);
+      // Aguardando comandos
+      lcd.setCursor(0, 0);
+      lcd.print("  Temp do MPT  ");
+      lcd.setCursor(0, 1);
+      lcd.print("Temperatura ");
+      lcd.setCursor(13, 1);
+      lcd.print(TEMPERATURE_read);
+      // set_Bit(PORTB, PB1);
     }else if (TEMPERATURE_read < 28)
     {
-      PWM_alter_rate(100);
-    }*/
+      // PWM_alter_rate(100);
+      lcd.setCursor(0, 0);
+      lcd.print("  Temp do MPT  ");
+      lcd.setCursor(0, 1);
+      lcd.print("Temperatura ");
+      lcd.setCursor(13, 1);
+      lcd.print(EEPROM_read(ADDRESS_TON));
+    }
   }
 
 
@@ -122,8 +145,8 @@ void my_delay_ms(unsigned ms)
 void _init_monitor(void)
 {
   //Inicialização do Display
-  lcd.backlight(); 
   lcd.init(); 
+  lcd.backlight(); 
   lcd.clear(); 
 
   //Mostrando início da maquina

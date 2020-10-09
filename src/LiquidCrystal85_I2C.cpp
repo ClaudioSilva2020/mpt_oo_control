@@ -2,11 +2,7 @@
 
 #include "LiquidCrystal85_I2C.h"
 #include <inttypes.h>
-#if defined(__AVR_ATtiny85__) || (__AVR_ATtiny2313__)
 #include "TinyWireM.h"      // include this if ATtiny85 or ATtiny2313
-#else 
-#include <Wire.h>           // original lib include
-#endif
 #include "Arduino.h"
 
 
@@ -34,7 +30,7 @@ LiquidCrystal_I2C::LiquidCrystal_I2C(uint8_t lcd_Addr,uint8_t lcd_cols,uint8_t l
   _Addr = lcd_Addr;
   _cols = lcd_cols;
   _rows = lcd_rows;
-  _backlightval = LCD_BACKLIGHT;
+  _backlightval = LCD_NOBACKLIGHT;
 }
 
 void LiquidCrystal_I2C::init(){
@@ -43,11 +39,7 @@ void LiquidCrystal_I2C::init(){
 
 void LiquidCrystal_I2C::init_priv()
 {
-#if defined (__AVR_ATtiny85__) || (__AVR_ATtiny2313__)
 	TinyWireM.begin();             // initialize I2C lib
-#else   // original call
-	Wire.begin();
-#endif
 	_displayfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS;
 	begin(_cols, _rows);  
 }
@@ -66,7 +58,7 @@ void LiquidCrystal_I2C::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 	// SEE PAGE 45/46 FOR INITIALIZATION SPECIFICATION!
 	// according to datasheet, we need at least 40ms after power rises above 2.7V
 	// before sending commands. Arduino can turn on way befer 4.5V so we'll wait 50
-	delayMicroseconds(50000); 
+	delay(50); 
   
 	// Now we pull both RS and R/W low to begin commands
 	expanderWrite(_backlightval);	// reset expanderand turn backlight off (Bit 8 =1)
@@ -76,20 +68,21 @@ void LiquidCrystal_I2C::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 	// this is according to the hitachi HD44780 datasheet
 	// figure 24, pg 46
 	
-	// we start in 8bit mode, try to set 4 bit mode
-	write4bits(0x03);
-	delayMicroseconds(4500); // wait min 4.1ms
-	
-	// second try
-	write4bits(0x03);
-	delayMicroseconds(4500); // wait min 4.1ms
-	
-	// third go!
-	write4bits(0x03); 
-	delayMicroseconds(150);
-	
-	// finally, set to 4-bit interface
-	write4bits(0x02); 
+	  // we start in 8bit mode, try to set 4 bit mode
+   write4bits(0x03 << 4);
+   delayMicroseconds(4500); // wait min 4.1ms
+   
+   // second try
+   write4bits(0x03 << 4);
+   delayMicroseconds(4500); // wait min 4.1ms
+   
+   // third go!
+   write4bits(0x03 << 4); 
+   delayMicroseconds(150);
+   
+   // finally, set to 4-bit interface
+   write4bits(0x02 << 4); 
+
 
 
 	// set # lines, font size, etc.
@@ -231,14 +224,16 @@ inline size_t LiquidCrystal_I2C::write(uint8_t value) {
 
 
 
+
+
 /************ low level data pushing commands **********/
 
 // write either command or data
 void LiquidCrystal_I2C::send(uint8_t value, uint8_t mode) {
-	uint8_t highnib=value>>4;
-	uint8_t lownib=value & 0x0F;
-	write4bits((highnib)|mode);
-	write4bits((lownib)|mode);
+	uint8_t highnib=value&0xf0;
+	uint8_t lownib=(value<<4)&0xf0;
+       write4bits((highnib)|mode);
+	write4bits((lownib)|mode); 
 }
 
 void LiquidCrystal_I2C::write4bits(uint8_t value) {
@@ -247,15 +242,9 @@ void LiquidCrystal_I2C::write4bits(uint8_t value) {
 }
 
 void LiquidCrystal_I2C::expanderWrite(uint8_t _data){                                        
-#if defined(__AVR_ATtiny85__) || (__AVR_ATtiny2313__)   // Replaced Wire calls with ATtiny TWI calls
 	TinyWireM.beginTransmission(_Addr); 
 	TinyWireM.send(((int)(_data) | _backlightval)); 
 	TinyWireM.endTransmission();
-#else  // original lib function
-	Wire.beginTransmission(_Addr);
-	Wire.write((int)(_data) | _backlightval);
-	Wire.endTransmission();   
-#endif
 	}
 
 void LiquidCrystal_I2C::pulseEnable(uint8_t _data){
@@ -314,5 +303,3 @@ uint8_t LiquidCrystal_I2C::init_bargraph(uint8_t graphtype){return 0;}
 void LiquidCrystal_I2C::draw_horizontal_graph(uint8_t row, uint8_t column, uint8_t len,  uint8_t pixel_col_end){}
 void LiquidCrystal_I2C::draw_vertical_graph(uint8_t row, uint8_t column, uint8_t len,  uint8_t pixel_row_end){}
 void LiquidCrystal_I2C::setContrast(uint8_t new_val){}
-
-	

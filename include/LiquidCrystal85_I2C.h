@@ -2,17 +2,13 @@
 // Note: The original libe file has beem modified to support the ATtiny85  1/20/11 by "BroHogan"
 // All changes can be located by searching for "__AVR_ATtiny85__". 
 
-#ifndef LiquidCrystal85_I2C_h
-#define LiquidCrystal85_I2C_h
+#ifndef LiquidCrystal_attiny_h
+#define LiquidCrystal_attiny_h
 
 #include <inttypes.h>
 #include "Print.h" 
-
-#if defined(__AVR_ATtiny85__) || (__AVR_ATtiny2313__)
 #include "TinyWireM.h"      // include this if ATtiny85 or ATtiny2313
-#else 
-#include <Wire.h>           // original lib include
-#endif
+
 
 // commands
 #define LCD_CLEARDISPLAY 0x01
@@ -53,12 +49,12 @@
 #define LCD_5x8DOTS 0x00
 
 // flags for backlight control
-#define LCD_BACKLIGHT 0x00
-#define LCD_NOBACKLIGHT 0x80
+#define LCD_BACKLIGHT 0x08
+#define LCD_NOBACKLIGHT 0x00
 
-#define En B00010000  // Enable bit
-#define Rw B00100000  // Read/Write bit
-#define Rs B01000000  // Register select bit
+#define En B00000100  // Enable bit
+#define Rw B00000010  // Read/Write bit
+#define Rs B00000001  // Register select bit
 
 class LiquidCrystal_I2C : public Print {
 public:
@@ -86,17 +82,21 @@ public:
   void noAutoscroll(); 
   void createChar(uint8_t, uint8_t[]);
   void setCursor(uint8_t, uint8_t); 
+#if defined(ARDUINO) && ARDUINO >= 100
   virtual size_t write(uint8_t);
+#else
+  virtual void write(uint8_t);
+#endif
   void command(uint8_t);
   void init();
 
 ////compatibility API function aliases
-void blink_on();						// alias for blink()
-void blink_off();       					// alias for noBlink()
-void cursor_on();      	 					// alias for cursor()
-void cursor_off();      					// alias for noCursor()
-void setBacklight(uint8_t new_val);				// alias for backlight() and nobacklight()
-void load_custom_character(uint8_t char_num, uint8_t *rows);	// alias for createChar()
+void blink_on();            // alias for blink()
+void blink_off();                 // alias for noBlink()
+void cursor_on();                 // alias for cursor()
+void cursor_off();                // alias for noCursor()
+void setBacklight(uint8_t new_val);       // alias for backlight() and nobacklight()
+void load_custom_character(uint8_t char_num, uint8_t *rows);  // alias for createChar()
 void printstr(const char[]);
 
 ////Unsupported API functions (not implemented in this library)
@@ -109,7 +109,7 @@ void off();
 uint8_t init_bargraph(uint8_t graphtype);
 void draw_horizontal_graph(uint8_t row, uint8_t column, uint8_t len,  uint8_t pixel_col_end);
 void draw_vertical_graph(uint8_t row, uint8_t column, uint8_t len,  uint8_t pixel_col_end);
-	 
+   
 
 private:
   void init_priv();
