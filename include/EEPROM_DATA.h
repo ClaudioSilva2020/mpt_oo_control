@@ -33,6 +33,7 @@ void EEPROM_write(uint8_t ucAddress, uint8_t ucData)
 
     EECR |= (1<<EEMPE);
     EECR |= (1<<EEPE);
+    
 }
 /**************************************************************
 *                Função de Leitura da EEPROM                  *

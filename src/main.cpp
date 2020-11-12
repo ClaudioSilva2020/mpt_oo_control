@@ -56,8 +56,8 @@ void setup()
   // unsigned int TEMPERATURE_read;
   // Bit 0 e 1 como saída e bit 2 e 3 como entrada
   // Pull-Up habilitado e as saída em nível lógico baixo
-  // DDRB |= 0x03; 
-  // PORTB |= 0x0C;
+  DDRB |= 0x03; 
+  PORTB |= 0x0C;
   
   value_on = EEPROM_read(ADDRESS_TON);
   value_off = EEPROM_read(ADDRESS_TOFF);
@@ -72,21 +72,26 @@ void setup()
     EEPROM_write(ADDRESS_TOFF, timers_temp_t.timer_off);
   }
   
+  TEMP_read_init();
   
-  // init_module(EEPROM_read(ADDRESS_TON), EEPROM_read(ADDRESS_TOFF));
-  // PWM_alter_rate(128);
+  init_module(EEPROM_read(ADDRESS_TON), EEPROM_read(ADDRESS_TOFF));
+  PWM_alter_rate(128);
+  
 }
   void loop()
   {
+    
     // _init_monitor();
-    TEMPERATURE_read = (TEMP_read() - 235)/1.22;
+    ;
+    TEMPERATURE_read = (TEMP_read() - 265)/1.22;
+   
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("  Temp do MPT  ");
     lcd.setCursor(0, 1);
     lcd.print("Temp: ");
     lcd.setCursor(11, 1);
-    lcd.print((TEMP_read()-235)/1.22);
+    lcd.print((TEMP_read()-265)/1.22);
     lcd.setCursor(15, 1);
     lcd.print("C");
     my_delay_ms(500);
