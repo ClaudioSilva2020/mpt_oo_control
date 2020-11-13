@@ -51,7 +51,7 @@ LiquidCrystal_I2C lcd(addressLCD, COLS, ROWS);
 
 void setup()
 {
-  _init_monitor();
+  // _init_monitor();
   int value_on, value_off;
   // unsigned int TEMPERATURE_read;
   // Bit 0 e 1 como saída e bit 2 e 3 como entrada
@@ -82,41 +82,20 @@ void setup()
   {
     
     // _init_monitor();
-    ;
+    
     TEMPERATURE_read = (TEMP_read() - 265)/1.22;
-   
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("  Temp do MPT  ");
-    lcd.setCursor(0, 1);
-    lcd.print("Temp: ");
-    lcd.setCursor(11, 1);
-    lcd.print((TEMP_read()-265)/1.22);
-    lcd.setCursor(15, 1);
-    lcd.print("C");
-    my_delay_ms(500);
-    if (TEMPERATURE_read >= 33)
+    if (TEMPERATURE_read >= 33 & TEMPERATURE_read < 70)
     {
-      // PWM_alter_rate(230);
-      EEPROM_write(0x02, TEMPERATURE_read);
-      // Aguardando comandos
-      lcd.setCursor(0, 0);
-      lcd.print("  Temp do MPT  ");
-      lcd.setCursor(0, 1);
-      lcd.print("Temperatura ");
-      lcd.setCursor(13, 1);
-      lcd.print(TEMPERATURE_read);
-      // set_Bit(PORTB, PB1);
+      PWM_alter_rate(180);
     }else if (TEMPERATURE_read < 28)
     {
-      // PWM_alter_rate(100);
-      lcd.setCursor(0, 0);
-      lcd.print("  Temp do MPT  ");
-      lcd.setCursor(0, 1);
-      lcd.print("Temperatura ");
-      lcd.setCursor(13, 1);
-      lcd.print(EEPROM_read(ADDRESS_TON));
+      PWM_alter_rate(0);
+    }else if (TEMPERATURE_read > 70)
+    {
+      PWM_alter_rate(255);
+
     }
+    
   }
 
 
