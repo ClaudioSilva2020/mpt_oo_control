@@ -1,7 +1,7 @@
 /****************************************************************************
 @file main.cpp
 @brief Programa main do firmware da placa de controle de acionamento do MPT
-@author Cláudio Silva 
+@author Claudio Silva 
 @date 31/08/2020
 @version 1.0
 ****************************************************************************/
@@ -23,6 +23,7 @@
 
 #define COMAND_CH PB1
 #define STATE_RELAY PB2
+#define CONFIG_BT PB5
 #define ADDRESS_TON 0x00
 #define ADDRESS_TOFF 0x01
 #define addressLCD 0x20
@@ -56,7 +57,7 @@ void setup()
   // unsigned int TEMPERATURE_read;
   // Bit 0 e 1 como saída e bit 2 e 3 como entrada
   // Pull-Up habilitado e as saída em nível lógico baixo
-  DDRB |= 0x03; 
+  DDRB |= 0x33; 
   PORTB |= 0x0C;
   
   value_on = EEPROM_read(ADDRESS_TON);
@@ -73,6 +74,10 @@ void setup()
   }
   
   TEMP_read_init();
+  if (~CONFIG_BT)
+  {
+    _init_monitor();
+  }
   
   init_module(EEPROM_read(ADDRESS_TON), EEPROM_read(ADDRESS_TOFF));
   PWM_alter_rate(128);

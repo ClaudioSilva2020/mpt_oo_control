@@ -9,7 +9,7 @@
 #ifndef __EEPROM_DATA
 #define __EEPROM_DATA
 
-#include <Arduino.h>
+//#include <Arduino.h>
 
 void EEPROM_write(uint8_t ucAddress, uint8_t ucData);
 unsigned char EEPROM_read(uint8_t ucAddress);
