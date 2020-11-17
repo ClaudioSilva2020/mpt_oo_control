@@ -36,6 +36,7 @@
 void init_module(uint8_t timer_on, uint8_t timer_off);
 void my_delay_ms(unsigned ms);
 void _init_monitor(void);
+void _config_mode(void);
 // timer_on tempo em nível lógico alto
 // timer_off tempo em nível lógico baixo
 typedef struct 
@@ -74,10 +75,7 @@ void setup()
   }
   
   TEMP_read_init();
-  if (~CONFIG_BT)
-  {
-    _init_monitor();
-  }
+  
   
   init_module(EEPROM_read(ADDRESS_TON), EEPROM_read(ADDRESS_TOFF));
   PWM_alter_rate(128);
@@ -85,8 +83,11 @@ void setup()
 }
   void loop()
   {
-    
-    // _init_monitor();
+    if (~CONFIG_BT)
+    {
+      _init_monitor();
+      _config_mode();
+    }
     
     TEMPERATURE_read = (TEMP_read() - 265)/1.22;
     if (TEMPERATURE_read >= 33 & TEMPERATURE_read < 70)
@@ -130,7 +131,7 @@ void my_delay_ms(unsigned ms)
     --ms;
   }
 }
-
+// ----------------------Função de status de inicialização da Placa no LCD--------------------//
 void _init_monitor(void)
 {
   //Inicialização do Display
@@ -152,4 +153,9 @@ void _init_monitor(void)
   lcd.setCursor(0, 1);
   lcd.print(" Aguardando CMD ");
   my_delay_ms(20);
+}
+// ---------------------------Função de configuração e monitoramento --------------------------//
+void _config_mode()
+{
+  return;
 }
